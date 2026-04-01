@@ -2,18 +2,21 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { TodoGateway } from '../gateway/todo.gateway';
 
 @Injectable()
 export class TodoService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private todoGateway: TodoGateway,) {}
   //create todo
 async create(userId: string, dto: CreateTodoDto) {
-  return this.prisma.todo.create({
+  const todo = await this.prisma.todo.create({
     data: {
       ...dto,
       userId,
     },
   });
+  this.todoGateway.emitTodoCreated(userId, todo);
+  return todo;
 }
 //findall todos of a user
 async findAll(userId: string, page: number, limit: number) {
@@ -51,18 +54,19 @@ async findOne(userId: string, todoId: string) {
 }
 //update todo
 async update(userId: string, todoId: string, dto: UpdateTodoDto) {
-  await this.findOne(userId, todoId);  
-  return this.prisma.todo.update({
+  await this.findOne(userId, todoId);
+  const todo = await this.prisma.todo.update({
     where: { id: todoId },
     data: dto,
   });
+  this.todoGateway.emitTodoUpdated(userId, todo);
+  return todo;
 }
 //remove todo
 async remove(userId: string, todoId: string) {
-  await this.findOne(userId, todoId);  
-  await this.prisma.todo.delete({
-    where: { id: todoId },
-  });
+  await this.findOne(userId, todoId);
+  await this.prisma.todo.delete({ where: { id: todoId } });
+  this.todoGateway.emitTodoDeleted(userId, todoId);
   return { message: 'Todo deleted successfully' };
 }
 }
