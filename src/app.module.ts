@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { TodoModule } from './todo/todo.module';
 import { QueueModule } from './queue/queue.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { QueueModule } from './queue/queue.module';
     UserModule,
     TodoModule,
     QueueModule,
+    GatewayModule,
   ],
 })
 export class AppModule {}
