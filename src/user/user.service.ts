@@ -37,7 +37,7 @@ export class UserService {
         id: true,
         name: true,
         email: true,
-        avatar: true,
+        
       },
     });
     return updatedUser;
@@ -54,20 +54,20 @@ export class UserService {
     return { message: 'User account deleted successfully' };
   }
 
-  async updateAvatar(userId: string, filename: string) {
-    const avatarUrl = `/uploads/avatars/${filename}`;
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: { avatar: avatarUrl },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        avatar: true,
-      },
-    });
-    return user;
-  }
+  // async updateAvatar(userId: string, filename: string) {
+  //   const avatarUrl = `/uploads/avatars/${filename}`;
+  //   const user = await this.prisma.user.update({
+  //     where: { id: userId },
+  //     // avatar removed
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       email: true,
+        
+  //     },
+  //   });
+  //   return user;
+  // }
 
   async getAllUsers(page: number, limit: number) {
     const skip = (page - 1) * limit;
@@ -118,7 +118,7 @@ export class UserService {
         id: true,
         name: true,
         email: true,
-        avatar: true,
+        
       },
     });
     return updatedUser;
